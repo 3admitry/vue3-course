@@ -1,30 +1,47 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+ <post-form   @create="createPost"/>
+  <post-list
+      :posts="posts"/>
 </template>
 
+<script>
+import PostList from "@/components/PostList";
+import PostForm from "@/components/PostForm";
+
+export default {
+  name: "App",
+  components: {
+    PostForm, PostList
+  },
+  data() {
+    return {
+      posts: [
+        {id: 1, title: 'Vue 1', body: 'Some body 1'},
+        {id: 2, title: 'Vue 2', body: 'Some body 2'},
+        {id: 3, title: 'Vue 3', body: 'Some body 3'},
+        {id: 4, title: 'Vue 4', body: 'Some body 4'},
+      ],
+      title: '',
+      body: '',
+    }
+  },
+ methods: {
+   createPost(post){
+     this.posts.push(post)
+   }
+ }
+}
+</script>
+
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+* {
+  margin: 2rem;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-nav {
-  padding: 30px;
-}
-
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-nav a.router-link-exact-active {
-  color: #42b983;
+.post {
+  padding: 15px;
+  border: 1px solid green;
 }
 </style>
