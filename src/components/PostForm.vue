@@ -1,25 +1,29 @@
 <template>
+  <h2>Add new post</h2>
   <form @submit.prevent>
-    <input type="text"
-           v-model="post.title"
-           placeholder="Title post"
-    >
-    <input type="text"
-           v-model="post.body"
-           placeholder="Description post">
+    <my-input
+        v-model="post.title"
+        placeholder="Title post"
+    />
+    <my-input v-model="post.body"
+              placeholder="Description post"
+    />
     <!--
     Классическое двусоторонее связывание
     <input type="text"
                @input="post.body = $event.currentTarget.value"
                v-bind:value="post.body"
                placeholder="Description post">-->
-    <button @:click="createPost">Add post</button>
+    <my-button @:click="createPost">Add post</my-button>
   </form>
 </template>
 
 <script>
+import MyInput from "@/components/UI/MyInput";
+
 export default {
   name: "PostForm",
+  components: {MyInput},
   data() {
     return {
       post: {
