@@ -1,17 +1,29 @@
 <template>
   <div class="app">
     <h1>My posts</h1>
+    <my-input
+        v-model="searchQuery"
+        placeholder="Search..."
+    />
     <div class="app__btns">
-      <my-button @click="showDialog">Add new post</my-button>
+      <my-button @click="showDialog">
+        Add new post
+      </my-button>
       <my-select
-      v-model="selectedSort"
-      :options="sortOptions"
+          v-model="selectedSort"
+          :options="sortOptions"
       />
     </div>
     <my-dialog v-model:show="isDialogOpen">
-      <post-form @create="createPost"/>
+      <post-form
+          @create="createPost"
+      />
     </my-dialog>
-    <post-list :posts="sortedPost" @remove="removePost" v-if="!isPostsLoading"/>
+    <post-list
+        :posts="sortedAndSearchedPosts"
+        @remove="removePost"
+        v-if="!isPostsLoading"
+    />
     <div v-else>Loading...</div>
   </div>
 </template>
@@ -22,10 +34,12 @@ import PostForm from "@/components/PostForm";
 import MyButton from "@/components/UI/MyButton";
 import axios from "axios";
 import MySelect from "@/components/UI/my-select";
+import MyInput from "@/components/UI/MyInput";
 
 export default {
   name: "App",
   components: {
+    MyInput,
     MySelect,
     MyButton,
     PostForm, PostList
@@ -38,6 +52,10 @@ export default {
       isDialogOpen: false,
       isPostsLoading: false,
       selectedSort: '',
+      searchQuery: '',
+      page: '',
+      totalCountPage: '',
+      limit: '',
       sortOptions: [
         {value: 'title', name: 'By title'},
         {value: 'body', name: 'By description'},
@@ -59,7 +77,13 @@ export default {
       try {
         this.isPostsLoading = true;
         setTimeout(async () => {
-          const response = await axios.get('https://jsonplaceholder.typicode.com/posts?_limit=10');
+          const response = await axios.get('https://jsonplaceholder.typicode.com/posts?_limit=10', {
+            params: {
+              _page: this.page,
+              _limit: this.limit,
+            }
+          });
+          //this.totalCountPage = response.headers['x-tota']
           this.posts = response.data;
           this.isPostsLoading = false;
         }, 1500)
@@ -72,8 +96,11 @@ export default {
     this.fetchPosts()
   },
   computed: {
-    sortedPost(){
-      return [...this.posts].sort((a,b)=>a[this.selectedSort]?.localeCompare(b[this.selectedSort]))
+    sortedPost() {
+      return [...this.posts].sort((a, b) => a[this.selectedSort]?.localeCompare(b[this.selectedSort]))
+    },
+    sortedAndSearchedPosts() {
+      return this.sortedPost.filter(post => post.title.toLowerCase().includes(this.searchQuery.toLowerCase()))
     }
   }
 }
@@ -89,7 +116,8 @@ export default {
 .app {
   margin: 20px;
 }
-.app__btns{
+
+.app__btns {
   display: flex;
   justify-content: space-between;
   margin: 10px 0;
