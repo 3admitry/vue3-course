@@ -25,7 +25,15 @@
         v-if="!isPostsLoading"
     />
     <div v-else>Loading...</div>
+
+    <!--    Example of pagination-->
+    <!--    <my-pagination
+            :page="page"
+            :totalCountPage="totalCountPage"
+            @change="changePage"
+        />-->
   </div>
+  <div ref="observer" class="observer"></div>
 </template>
 
 <script>
@@ -35,10 +43,12 @@ import MyButton from "@/components/UI/MyButton";
 import axios from "axios";
 import MySelect from "@/components/UI/my-select";
 import MyInput from "@/components/UI/MyInput";
+import MyPagination from "@/components/MyPagination";
 
 export default {
   name: "App",
   components: {
+    MyPagination,
     MyInput,
     MySelect,
     MyButton,
@@ -53,9 +63,9 @@ export default {
       isPostsLoading: false,
       selectedSort: '',
       searchQuery: '',
-      page: '',
-      totalCountPage: '',
-      limit: '',
+      page: 1,
+      totalCountPage: 0,
+      limit: 10,
       sortOptions: [
         {value: 'title', name: 'By title'},
         {value: 'body', name: 'By description'},
@@ -76,24 +86,65 @@ export default {
     async fetchPosts() {
       try {
         this.isPostsLoading = true;
-        setTimeout(async () => {
-          const response = await axios.get('https://jsonplaceholder.typicode.com/posts?_limit=10', {
+          const response = await axios.get('https://jsonplaceholder.typicode.com/posts', {
             params: {
               _page: this.page,
               _limit: this.limit,
             }
           });
-          //this.totalCountPage = response.headers['x-tota']
+          this.totalCountPage = Math.ceil(response.headers['x-total-count'] / this.limit);
           this.posts = response.data;
           this.isPostsLoading = false;
-        }, 1500)
+
       } catch {
         console.log('Ошибка')
       }
-    }
+    },
+    // Infinity loading posts
+    async loadMorePosts() {
+      try {
+        this.page += 1;
+        const response = await axios.get('https://jsonplaceholder.typicode.com/posts', {
+          params: {
+            _page: this.page,
+            _limit: this.limit,
+          }
+        });
+        this.totalCountPage = Math.ceil(response.headers['x-total-count'] / this.limit);
+        this.posts = [...this.posts, ...response.data];
+
+      } catch {
+        console.log('Ошибка')
+      }
+    },
+    //Method for pagination
+    /*    changePage(numberPage) {
+          this.page = numberPage
+        }*/
   },
+
   mounted() {
-    this.fetchPosts()
+    this.fetchPosts();
+
+    let options = {
+      rootMargin: '0px',
+      threshold: 1.0
+    }
+
+    let callback = (entries, observer) => {
+      if (entries[0].isIntersecting && this.page < this.totalCountPage) {
+        this.loadMorePosts();
+      }
+    };
+
+    let observer = new IntersectionObserver(callback, options);
+    observer.observe(this.$refs.observer);
+  },
+  watch: {
+    //Watcher for pagination
+    /*page() {
+      this.fetchPosts()
+    }*/
   },
   computed: {
     sortedPost() {
@@ -123,5 +174,9 @@ export default {
   margin: 10px 0;
 }
 
-
+.observer {
+  height: 30px;
+  width: 100%;
+  background: green;
+}
 </style>
