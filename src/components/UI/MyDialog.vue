@@ -7,33 +7,26 @@
 </template>
 
 <script>
+import toggleMixin from "@/components/mixins/toggleMixin";
+
 export default {
   name: "my-dialog",
-  methods: {
-    hideDialog(){
-    this.$emit('update:show', false)
-    }
-  },
-  props:{
-    show: {
-      type: Boolean,
-      default: false,
-    }
-  }
+  mixins: [toggleMixin]
 }
 </script>
 
 <style scoped>
-.dialog{
+.dialog {
   left: 0;
   right: 0;
   bottom: 0;
   top: 0;
-  background: rgb(0,0,0,0.5);
+  background: rgb(0, 0, 0, 0.5);
   position: fixed;
   display: flex;
 }
-.dialog__content{
+
+.dialog__content {
   background: white;
   padding: 20px;
   margin: auto;
