@@ -6,15 +6,10 @@
       </my-button>
     </div>
     <div class="navbar__btns">
-      <my-button @click="$router.push('/store')">
-        Store
-      </my-button>
-      <my-button @click="$router.push('/posts')">
-        Posts
-      </my-button>
-      <my-button @click="$router.push('/about')">
-        About
-      </my-button>
+      <my-button @click="$router.push('/posts')">Posts</my-button>
+      <my-button @click="$router.push('/store')">Store</my-button>
+      <my-button @click="$router.push('/composition')">CompositionApi</my-button>
+      <my-button @click="$router.push('/about')">About</my-button>
     </div>
   </nav>
 </template>
@@ -26,14 +21,15 @@ export default {
 </script>
 
 <style>
-.navbar{
+.navbar {
   display: flex;
   justify-content: space-between;
   box-shadow: 2px 2px 4px gray;
   align-items: center;
   padding: 20px;
 }
-.navbar__btns{
+
+.navbar__btns {
   display: flex;
   gap: 20px;
 }
