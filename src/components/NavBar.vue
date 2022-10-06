@@ -6,6 +6,9 @@
       </my-button>
     </div>
     <div class="navbar__btns">
+      <my-button @click="$router.push('/store')">
+        Store
+      </my-button>
       <my-button @click="$router.push('/posts')">
         Posts
       </my-button>

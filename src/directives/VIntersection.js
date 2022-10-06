@@ -2,7 +2,6 @@ export default {
     // el - элемент на который вешаем дериктиву
     // объект в значении Value которого получаем переданное значение/объект/функцию которая будем использывать
     mounted(el, binding) {
-        console.log(binding)
         let options = {
             rootMargin: '0px',
             threshold: 1.0
