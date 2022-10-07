@@ -47,7 +47,7 @@ import PostList from "@/components/PostList";
 import PostForm from "@/components/PostForm";
 import MyButton from "@/components/UI/MyButton";
 import axios from "axios";
-import MySelect from "@/components/UI/my-select";
+import MySelect from "@/components/UI/MySelect";
 import MyInput from "@/components/UI/MyInput";
 import MyPagination from "@/components/MyPagination";
 
